@@ -9,9 +9,16 @@
   <div><span id="order">1</span>번째 참가자</div>
   <div>제시어: <span id="word"></span></div>
   <input type="text">
+  <input type="text">
+  <input type="text">
+
   <button>입력</button>
   <script>
-    
+    const number = parseInt(prompt('몇 명이 참가하나요?'), 10);
+    console.log('number', number);
+    alert(number);
+    const yesOrNo = confirm("맞나요?");
+    document.querySelectorAll('input');
   </script>
 </body>
 </html>
