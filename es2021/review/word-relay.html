@@ -3,9 +3,62 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>끝말잇기</title>
   </head>
   <body>
-    /* hello */
+    <!--
+        1. 사람 몇명인지 확인
+        2. 순서를 정하기
+        3. 입력 대기
+
+        첫 단어는 제시어 제한 x
+        
+        1. 단어 입력
+        2. 이 사람이 첫 사람이거나 기존 제시어의 끝과 입력된 단어의 처음이 맞는지 확인
+            2.1 맞으면 3으로 넘어가고 화면의 표시된 제시어변경하기
+            2.2 틀리면 끝났다고 알려주기
+        3.  현재 순서 + 1 > 총인원인가?
+            3.1 맞으면 현재 순서 = 1로 지정하기
+            1.2 틀리면 현재순서 = 현재순서 + 1로 지정하기 
+        4. 입력 대기
+    -->
+    <div><span id="order">1</span>번째 사람입니다.</div>
+    <div>제시어: <span id="word"></span></div>
+    <input type="text" />
+    <button>입력</button>
+
+    <script>
+      const number = Number(prompt("몇명이 참가했나요?"));
+      const $order = document.querySelector("#order");
+      const $word = document.querySelector("#word");
+      const $input = document.querySelector("input");
+      const $button = document.querySelector("button");
+      let newWord; // 입력된 단어
+      let word; // 제시어
+
+      const onClickButton = () => {
+        if (!word || word[word.length - 1] === newWord[0]) {
+          word = newWord;
+          $word.textContent = word;
+          const order = parseInt($order.textContent);
+          if (order + 1 > number) {
+            $order.textContent = 1;
+          } else {
+            $order.textContent = order + 1;
+          }
+        } else {
+          alert("틀렸다");
+        }
+        $input.value = "";
+        $input.focus();
+      };
+
+      const onInput = (event) => {
+        newWord = event.target.value;
+      };
+
+      $button.addEventListener("click", onClickButton);
+      $input.addEventListener("input", onInput);
+    </script>
   </body>
 </html>
