@@ -11,6 +11,99 @@
       <button>확인</button>
     </form>
     <div id="logs"></div>
-    <script></script>
+    <script>
+      /*
+        1값을 랜덤으로 뽑기
+        2. 숫자 네자리입력 -> 검증 필요
+        3. 홉런인가?
+            3.1 맞으면 승리
+        4. 홈런이아니라면 10회를 넘었는가?
+            4.1 맞으면 패배
+        5. 스트라이크, 볼을 계산하기
+            5.1. 아웃이면 아웃 출력
+            5.2. 아웃 아니면 스트라이크, 볼 출력
+        */
+      const $form = document.querySelector("#form");
+      const $input = document.querySelector("#input");
+      const $logs = document.querySelector("#logs");
+
+      const numbers = [];
+      for (let n = 0; n < 9; n += 1) {
+        numbers.push(n + 1);
+      }
+      answer = [];
+      for (let n = 0; n < 4; n += 1) {
+        const index = Math.floor(Math.random() * numbers.length);
+        answer.push(numbers[index]);
+        numbers.splice(index, 1);
+      }
+      console.log(numbers, answer);
+
+      function inputCheck(input) {
+        if (input.length !== 4) {
+          return alert("네자리 숫자를 입력해주세요");
+        }
+        if (new Set(input).size !== 4) {
+          return alert("중복되지 않게 입력해주세요");
+        }
+        if (tries.includes(input)) {
+          return alert("이미 시도한 값입니다.");
+        }
+        return true;
+      }
+
+      const defeated = function () {
+        const message = document.createTextNode(
+          `실패! 정답은 ${answer.join("")}!`
+        );
+        $logs.appendChild(message);
+      };
+      tries = [];
+      $form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const value = $input.value;
+        $input.value = "";
+
+        if (!inputCheck(value)) {
+          //input에 이상이 있으면 리턴
+          return;
+        }
+
+        if (answer.join("") === value) {
+          $logs.textContent = "홈런!";
+          return;
+        }
+
+        if (tries.length >= 9) {
+          defeated();
+          return;
+        }
+
+        let strike = 0;
+        let ball = 0;
+        let out = 0;
+        for (let n = 0; n < answer.length; n += 1) {
+          const index = value.indexOf(answer[n]);
+          if (index > -1) {
+            if (index === n) {
+              strike += 1;
+            } else {
+              ball += 1;
+            }
+          }
+        }
+        $logs.append(
+          `${value} : 스트라이트 ${strike}, 볼 ${ball}`,
+          document.createElement("br")
+        );
+        if (strike === 0 && ball === 0) {
+          out++;
+          if (out === 3) {
+          }
+        }
+        tries.push(value);
+        console.log(tries);
+      });
+    </script>
   </body>
 </html>
