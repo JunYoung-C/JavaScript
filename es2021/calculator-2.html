@@ -62,12 +62,14 @@
       const $result = document.querySelector("#result");
       const onClickNumber = (event) => {
         if (!operator) {
+          // 비어있다.
           numOne += event.target.textContent;
           $result.value += event.target.textContent;
           return;
         }
 
         if (!numTwo) {
+          // 비어있다.
           $result.value = "";
         }
         numTwo += event.target.textContent;
@@ -89,6 +91,23 @@
         if (numOne) {
           operator = op;
           $operator.value = op;
+          if (numTwo) {
+            switch (operator) {
+              case "+":
+                numOne = parseInt(numOne) + parseInt(numTwo);
+                break;
+              case "-":
+                numOne = parseInt(numOne) - parseInt(numTwo);
+                break;
+              case "/":
+                numOne = parseInt(numOne) / parseInt(numTwo);
+                break;
+              case "*":
+                numOne = parseInt(numOne) * parseInt(numTwo);
+                break;
+            }
+            numTwo = "";
+          }
         } else {
           alert("숫자를 먼저 입력하세요");
         }
