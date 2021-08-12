@@ -27,6 +27,7 @@
         answer.push(numbers[index]);
         numbers.splice(index, 1);
       }
+      console.log(answer);
 
       const tries = [];
       function checkInput(input) {
@@ -42,6 +43,14 @@
         return true;
       } // 검사하는 코드
 
+      function defeated() {
+        const message = document.createTextNode(
+          `패배! 정답은 ${answer.join("")}`
+        );
+        $logs.appendChild(message);
+      }
+
+      let out = 0;
       $form.addEventListener("submit", (event) => {
         event.preventDefault();
         const value = $input.value;
@@ -57,10 +66,7 @@
           return;
         }
         if (tries.length >= 9) {
-          const message = document.createTextNode(
-            `패배! 정답은 ${answer.join("")}`
-          );
-          $logs.appendChild(message);
+          defeated();
           return;
         }
 
@@ -76,11 +82,21 @@
             }
           }
         }
-        $logs.append(
-          // append가 더 간편함
-          "${value}: ${strike} 스크라이크 ${ball} 볼",
-          document.createElement("br")
-        );
+        if (strike === 0 && ball === 0) {
+          out++;
+          $logs.append(`${value}: 아웃`, document.createElement("br"));
+        } else {
+          $logs.append(
+            // append가 더 간편함
+            `${value}: ${strike} 스크라이크 ${ball} 볼`,
+            document.createElement("br")
+          );
+        }
+        if (out === 3) {
+          defeated();
+          return;
+        }
+
         tries.push(value);
       });
     </script>
