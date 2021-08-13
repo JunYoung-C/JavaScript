@@ -99,6 +99,8 @@
         if (strike === 0 && ball === 0) {
           out++;
           if (out === 3) {
+            defeated();
+            return;
           }
         }
         tries.push(value);
