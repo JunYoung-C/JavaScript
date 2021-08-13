@@ -1,0 +1,67 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로또추첨기</title>
+    <style>
+      .ball {
+        display: inline-block;
+        border: 1px solid black;
+        border-radius: 20px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
+        margin-right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="result">추첨 결과는?</div>
+    <div id="bonus">보너스</div>
+  </body>
+  <script>
+    /*
+        1. 랜덤으로 공을 뽑는다.
+        2. 결과를 일정 시간 간격으로 출력한다.
+      */
+
+    const $result = document.querySelector("#result");
+    const $bonus = document.querySelector("#bonus");
+
+    const candidate = Array(45)
+      .fill()
+      .map((el, i) => i + 1); // 1 ~ 45 번호 저장
+
+    const shuffle = [];
+    for (let i = 0; i < candidate.length; i++) {
+      const random = Math.floor(Math.random() * candidate.length);
+      const spliceArray = candidate.splice(random, 1);
+      const value = spliceArray[0];
+      shuffle.push(value);
+    }
+    console.log(shuffle);
+    const winBalls = shuffle.slice(0, 6);
+    const bonus = shuffle[6];
+    console.log(winBalls, bonus); // 번호 뽑기 완료
+
+    const showBall = (number, $parent) => {
+      const $ball = document.createElement("div");
+      $ball.className = "ball";
+      $ball.textContent = number;
+      $parent.appendChild($ball);
+    };
+
+    for (let i = 0; i < winBalls.length; i++) {
+      setTimeout(() => {
+        showBall(winBalls[i], $result);
+      }, (i + 1) * 1000);
+    }
+
+    setTimeout(() => {
+      showBall(bonus, $bonus);
+    }, 7000);
+  </script>
+</html>
