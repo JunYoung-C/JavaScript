@@ -34,9 +34,37 @@
         rock: "-220px",
         paper: "-440px",
       };
-      $computer.style.background = `url(${IMG_URL}) ${rspX.paper} 0`;
-      $computer.style.backgroundSize = `auto 200px`;
-      setInterval(changeComputerHand, 50);
+
+      let computerChoice = "0";
+
+      const changeComputerHand = () => {
+        if (computerChoice === rspX.scissors) {
+          computerChoice = rspX.rock;
+        } else if (computerChoice === rspX.rock) {
+          computerChoice = rspX.paper;
+        } else if (computerChoice === rspX.paper) {
+          computerChoice = rspX.scissors;
+        }
+        $computer.style.background = `url(${IMG_URL}) ${computerChoice} 0`;
+        $computer.style.backgroundSize = `auto 200px`;
+      };
+      let intervalId = setInterval(changeComputerHand, 50);
+
+      let clickable = true;
+      const clickButton = () => {
+        if (clickable) {
+          clickable = false;
+          clearInterval(intervalId);
+          setTimeout(() => {
+            clickable = true;
+            intervalId = setInterval(changeComputerHand, 50);
+          }, 1000);
+        }
+      };
+
+      $scissors.addEventListener("click", clickButton);
+      $rock.addEventListener("click", clickButton);
+      $paper.addEventListener("click", clickButton);
     </script>
   </body>
 </html>
