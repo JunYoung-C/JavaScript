@@ -50,7 +50,7 @@
       } else if (event.target.classList.contains("ready")) {
         clearTimeout(timeOutId);
         $screen.classList.remove("ready");
-        $screen.classList.add("wating");
+        $screen.classList.add("waiting");
         $screen.textContent = "너무 성급하시군요!";
       } else if (event.target.classList.contains("now")) {
         endTime = new Date();
