@@ -26,16 +26,8 @@
       const rows = [];
 
       const checkWinner = (target) => {
-        let rowIndex;
-        let cellIndex;
-        rows.forEach((row, ri) => {
-          row.forEach((cell, ci) => {
-            if (cell === target) {
-              rowIndex = ri;
-              cellIndex = ci;
-            }
-          });
-        });
+        const rowIndex = target.parentNode.rowIndex;
+        const cellIndex = target.cellIndex;
 
         let hasWinner = false;
         if (
@@ -84,14 +76,7 @@
           return;
         }
 
-        let draw = true;
-        rows.forEach((row) => {
-          row.forEach((cell) => {
-            if (!cell.textContent) {
-              draw = false;
-            }
-          });
-        });
+        const draw = rows.flat().every((td) => td.textContent);
         if (draw) {
           $result.textContent = "무승무";
           return;
