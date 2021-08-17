@@ -101,6 +101,11 @@
           if (input === "1") {
             // 1. 모험
             this.changeScreen("battle");
+            const randomMonster = this.monsterList[0];
+            this.monster = new Monster(this, randomMonster);
+
+            this.showMessage(`야생의 ${this.monster.name}가 출몰했다!`);
+            this.updateMonsterStat();
           } else if (input === "2") {
             // 2. 휴식
           } else if (input === "3") {
@@ -113,6 +118,7 @@
           if (input === "1") {
             // 1. 공격
             this.changeScreen("battle");
+            this.monster;
           } else if (input === "2") {
             // 2. 회복
           } else if (input === "3") {
@@ -126,6 +132,15 @@
           $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
           $heroXp.textContent = `XP: ${hero.xp}/${hero.level * 15}`;
           $heroAtt.textContent = `ATT: ${hero.att}`;
+        }
+        updateMonsterStat() {
+          const { monster } = this;
+          $monsterName.textContent = monster.name;
+          $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+          $monsterAtt.textContent = `ATT: ${monster.att}`;
+        }
+        showMessage(message) {
+          $message.textContent = message;
         }
       }
 
@@ -145,6 +160,19 @@
         heal(monster) {
           this.hp += 20;
           this.hp -= monster.att;
+        }
+      }
+
+      class Monster {
+        constructor(game, monster) {
+          this.game = game;
+          this.name = monster.name;
+          this.maxHp = monster.hp;
+          this.hp = monster.hp;
+          this.att = monster.att;
+        }
+        attack(target) {
+          target.hp -= this.att;
         }
       }
 
