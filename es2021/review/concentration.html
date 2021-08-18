@@ -50,6 +50,8 @@
       const $wrapper = document.querySelector("#wrapper");
       const colors = ["red", "orange", "green", "yellow", "blue", "black"];
       const colorsCopy = colors.concat(colors);
+      let clicked = [];
+      let corrected = [];
       const total = 12;
 
       let shuffled = [];
@@ -74,7 +76,42 @@
         return card;
       }
 
-      function onClickCard() {}
+      let clickable = true;
+      function onClickCard() {
+        if (!clickable || corrected.includes(this) || clicked[0] === this) {
+          return;
+        }
+        clicked.push(this);
+        this.classList.toggle("flipped");
+        if (clicked.length !== 2) {
+          return;
+        }
+        const firstBackColor =
+          clicked[0].querySelector(".card-back").style.backgroundColor;
+        const secondBackColor =
+          clicked[1].querySelector(".card-back").style.backgroundColor;
+        if (firstBackColor === secondBackColor) {
+          corrected.push(clicked[0]);
+          corrected.push(clicked[1]);
+          clicked = [];
+          clickable = false;
+          setTimeout(() => {
+            clickable = true;
+            if (corrected.length === total) {
+              alert("복습코드 제작 완료!!");
+            }
+          }, 50);
+          return;
+        }
+        clickable = false;
+        setTimeout(() => {
+          clickable = true;
+          clicked[0].classList.remove("flipped");
+          clicked[1].classList.remove("flipped");
+          clicked = [];
+        }, 1000);
+      }
+
       function startGame() {
         for (let i = 0; i < total; i++) {
           const card = createCard(i);
