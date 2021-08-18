@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>짝맞추기</title>
+    <style>
+      .card {
+        display: inline-block;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        width: 70px;
+        height: 100px;
+        perspective: 140px;
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-front {
+        background: navy;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
+        backface-visibility: hidden;
+      }
+
+      .card-back {
+        transform: rotateY(180deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper"></div>
+    <script>
+      const $wrapper = document.querySelector("#wrapper");
+      const colors = ["red", "orange", "green", "yellow", "blue", "black"];
+      const colorsCopy = colors.concat(colors);
+      const total = 12;
+
+      let shuffled = [];
+      for (let i = 0; 0 < colorsCopy.length; i++) {
+        randomIndex = Math.floor(Math.random() * colorsCopy.length);
+        shuffled = shuffled.concat(colorsCopy.splice(randomIndex, 1));
+      }
+
+      function createCard(i) {
+        const card = document.createElement("div");
+        card.className = "card";
+        const innerCard = document.createElement("div");
+        innerCard.className = "card-inner";
+        const frontCard = document.createElement("div");
+        frontCard.className = "card-front";
+        const backCard = document.createElement("div");
+        backCard.className = "card-back";
+        backCard.style.backgroundColor = shuffled[i];
+        card.appendChild(innerCard);
+        innerCard.appendChild(frontCard);
+        innerCard.appendChild(backCard);
+        return card;
+      }
+
+      function onClickCard() {}
+      function startGame() {
+        for (let i = 0; i < total; i++) {
+          const card = createCard(i);
+          card.addEventListener("click", onClickCard);
+          $wrapper.appendChild(card);
+        }
+
+        document.querySelectorAll(".card").forEach((card, index) => {
+          setTimeout(() => {
+            card.classList.add("flipped");
+          }, 1000 + 100 * index);
+        });
+
+        setTimeout(() => {
+          document.querySelectorAll(".card").forEach((card) => {
+            card.classList.remove("flipped");
+          });
+        }, 5000);
+      }
+
+      startGame();
+    </script>
+  </body>
+</html>
