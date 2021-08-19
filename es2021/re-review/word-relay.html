@@ -1,35 +1,50 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>끝말잇기</title>
-</head>
-<body>
-    <div><span id=:"order">1</span>번째 참가자</div>
+  </head>
+  <body>
+    <div><span id="order">1</span>번째 참가자</div>
     <div>제시어: <span id="word"></span></div>
-    <input type="text">
+    <input type="text" />
     <button>입력</button>
     <script>
-        const $order = document.querySelector('#order');
-        const $word = document.querySelector('#order');
-        const $input = document.querySelector('input');
-        const number = Number(prompt('몇명인가요?'));
-        const $button = document.querySelector('button');
-        let newWord;
-        let word;
+      const $order = document.querySelector("#order");
+      const $word = document.querySelector("#word");
+      const $input = document.querySelector("input");
+      const number = Number(prompt("몇명인가요?"));
+      const $button = document.querySelector("button");
+      let newWord;
+      let word;
 
-        const onClickButton = () => {
-            if (!word) {
-                word = newWord;
-            }
+      // 몇명인지 입력받기
+      // 첫 제시어 입력받고 글자 바꾸기
+      // 다음 사람이 쓴 단어가 끝말잇기가 되는지 확인 후 맞으면 글자 바꾸기
+
+      const onClickButton = () => {
+        if (!word || word[word.length - 1] === newWord[0]) {
+          word = newWord;
+          $word.textContent = word;
+          const order = Number($order.textContent);
+          if (order > number) {
+            $order.textContent = 1;
+          } else {
+            $order.textContent = order + 1;
+          }
+        } else if (word[word.length - 1] !== newWord[0]) {
+          alert("틀렸어..");
         }
-        
-        const onInput = (event) => {
-            newWord = event.target.value;
-        }
-        $button.addEventListener('click', onClickButton);
-        $input.addEventListener('input', onInput);
+        $input.value = "";
+        $input.focus();
+      };
+
+      const onInput = (event) => {
+        newWord = event.target.value;
+      };
+      $button.addEventListener("click", onClickButton);
+      $input.addEventListener("input", onInput);
     </script>
-</body>
+  </body>
 </html>
