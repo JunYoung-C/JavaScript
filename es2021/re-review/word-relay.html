@@ -10,6 +10,26 @@
     <div>제시어: <span id="word"></span></div>
     <input type="text">
     <button>입력</button>
-    <script></script>
+    <script>
+        const $order = document.querySelector('#order');
+        const $word = document.querySelector('#order');
+        const $input = document.querySelector('input');
+        const number = Number(prompt('몇명인가요?'));
+        const $button = document.querySelector('button');
+        let newWord;
+        let word;
+
+        const onClickButton = () => {
+            if (!word) {
+                word = newWord;
+            }
+        }
+        
+        const onInput = (event) => {
+            newWord = event.target.value;
+        }
+        $button.addEventListener('click', onClickButton);
+        $input.addEventListener('input', onInput);
+    </script>
 </body>
 </html>
