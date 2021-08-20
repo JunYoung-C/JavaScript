@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="kor">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -21,6 +21,63 @@
   <body>
     <div id="result">추첨 결과는?</div>
     <div id="bonus">보너스:</div>
-    <script></script>
+    <script>
+      const $result = document.querySelector("#result");
+      const $bonus = document.querySelector("#bonus");
+      // 공을 랜덤으로 섞고 추첨공 6개 + 보너스공 1개를 뽑는다.
+      // ball 클래스를 만들고 일정 시간 간격으로 화면에 출력한다.
+      const numbers = Array(45)
+        .fill()
+        .map((n, i) => i + 1);
+      const shuffled = [];
+      while (numbers.length > 0) {
+        const index = Math.floor(Math.random() * numbers.length);
+        const value = numbers.splice(index, 1);
+        shuffled.push(value[0]);
+      }
+      const lotto = shuffled.slice(0, 6).sort((a, b) => a - b);
+      const bonus = shuffled[6];
+
+      for (let i = 0; lotto.length > i; i++) {
+        setTimeout(() => {
+          const ball = document.createElement("div");
+          ball.className = "ball";
+          ball.textContent = lotto[i];
+          if (lotto[i] < 10) {
+            ball.style.backgroundColor = "red";
+          } else if (lotto[i] < 20) {
+            ball.style.backgroundColor = "orange";
+          } else if (lotto[i] < 30) {
+            ball.style.backgroundColor = "yellow";
+          } else if (lotto[i] < 40) {
+            ball.style.backgroundColor = "green";
+          } else {
+            ball.style.backgroundColor = "blue";
+            ball.style.color = "white";
+          }
+          $result.appendChild(ball);
+        }, 1000 * i + 1000);
+      }
+      setTimeout(() => {
+        const ball = document.createElement("div");
+        ball.className = "ball";
+        ball.textContent = bonus;
+        if (bonus < 10) {
+          ball.style.backgroundColor = "red";
+        } else if (bonus < 20) {
+          ball.style.backgroundColor = "orange";
+        } else if (bonus < 30) {
+          ball.style.backgroundColor = "yello";
+        } else if (bonus < 40) {
+          ball.style.backgroundColor = "green";
+        } else {
+          ball.style.backgroundColor = "blue";
+          ball.style.color = "white";
+        }
+
+        $bonus.appendChild(ball);
+      }, 7000);
+      console.log(shuffled, lotto, bonus);
+    </script>
   </body>
 </html>
