@@ -25,7 +25,6 @@
       const $scissors = document.querySelector("#scissors");
       const $rock = document.querySelector("#rock");
       const $paper = document.querySelector("#paper");
-      const $btn = document.querySelector(".btn");
       const IMG_URL = "./rsp.png";
       $computer.style.background = `url(${IMG_URL}) 0 0`;
       $computer.style.backgroundSize = "auto 200px";
@@ -37,7 +36,7 @@
       };
 
       let hand = "scissors";
-      setInterval(() => {
+      const changeComputerHand = () => {
         if (hand === "scissors") {
           hand = "rock";
         } else if (hand === "rock") {
@@ -47,11 +46,47 @@
         }
         $computer.style.background = `url(${IMG_URL}) ${rspX[hand]} 0`;
         $computer.style.backgroundSize = "auto 200px";
-      }, 100);
+      };
 
+      let intervalId = setInterval(changeComputerHand, 50);
+
+      const scoreTable = {
+        scissors: -1,
+        rock: 0,
+        paper: 1,
+      };
+      let clickable = true;
+      let score = 0;
       const onButtonClick = (event) => {
-        const myHand = event.target.textContent;
-        console.log(myHand);
+        if (!clickable) {
+          return;
+        }
+        clickable = false;
+        const myHand =
+          event.target.textContent === "가위"
+            ? "scissors"
+            : event.target.textContent === "바위"
+            ? "rock"
+            : "paper";
+        clearInterval(intervalId);
+
+        const myHandScore = scoreTable[myHand];
+        const comHandScore = scoreTable[hand];
+        const diff = myHandScore - comHandScore;
+        if ([1, -2].includes(diff)) {
+          score += 1;
+          $score.textContent = `승리 : ${score}점`;
+        } else if ([-1, 2].includes(diff)) {
+          score -= 1;
+          $score.textContent = `패배 : ${score}점`;
+        } else if (diff === 0) {
+          $score.textContent = `무승부 : ${score}점`;
+        }
+        setTimeout(() => {
+          clickable = true;
+          intervalId = setInterval(changeComputerHand, 50);
+        }, 1000);
+        console.log(myHand, hand);
       };
 
       $scissors.addEventListener("click", onButtonClick);
