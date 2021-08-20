@@ -58,4 +58,84 @@
       <button id="multiply">x</button>
     </div>
   </body>
+  <script>
+    const $operator = document.querySelector("#operator");
+    const $result = document.querySelector("#result");
+    let numOne = "";
+    let numTwo = "";
+    let operator = "";
+    // 숫자 1을 입력한다.
+    // 연산자를 입력한다.
+    // 숫자 2를 입력한다.
+    // =을 누른다.
+    // 결괏값이 나온다.
+    const onClickNumber = (event) => {
+      if (!operator) {
+        numOne += event.target.textContent;
+        $result.value = numOne;
+      } else if (operator) {
+        numTwo += event.target.textContent;
+        $result.value = numTwo;
+      }
+    };
+
+    document.querySelector("#num-0").addEventListener("click", onClickNumber);
+    document.querySelector("#num-1").addEventListener("click", onClickNumber);
+    document.querySelector("#num-2").addEventListener("click", onClickNumber);
+    document.querySelector("#num-3").addEventListener("click", onClickNumber);
+    document.querySelector("#num-4").addEventListener("click", onClickNumber);
+    document.querySelector("#num-5").addEventListener("click", onClickNumber);
+    document.querySelector("#num-6").addEventListener("click", onClickNumber);
+    document.querySelector("#num-7").addEventListener("click", onClickNumber);
+    document.querySelector("#num-8").addEventListener("click", onClickNumber);
+    document.querySelector("#num-9").addEventListener("click", onClickNumber);
+
+    const onClickOp = (event) => {
+      if (numOne) {
+        operator = event.target.textContent;
+        $operator.value = operator;
+      } else {
+        alert("숫자 입력하고 연산자 입력ㄱㄱ");
+      }
+    };
+    document.querySelector("#plus").addEventListener("click", onClickOp);
+    document.querySelector("#minus").addEventListener("click", onClickOp);
+    document.querySelector("#divide").addEventListener("click", onClickOp);
+    document.querySelector("#multiply").addEventListener("click", onClickOp);
+
+    const onClickCalculate = () => {
+      if (numTwo) {
+        switch (operator) {
+          case "+":
+            $result.value = parseInt(numOne) + parseInt(numTwo);
+            break;
+          case "-":
+            $result.value = numOne - numTwo;
+            break;
+          case "x":
+            $result.value = numOne * numTwo;
+            break;
+          case "/":
+            $result.value = numOne / numTwo;
+            break;
+        }
+        numOne = $result.value;
+        numTwo = "";
+      } else {
+        alert("숫자, 연산자 먼저 입력하세요");
+      }
+    };
+    const onClickClear = () => {
+      $operator.value = "";
+      $result.value = "";
+      numOne = "";
+      numTwo = "";
+      operator = "";
+    };
+
+    document
+      .querySelector("#calculate")
+      .addEventListener("click", onClickCalculate);
+    document.querySelector("#clear").addEventListener("click", onClickClear);
+  </script>
 </html>
