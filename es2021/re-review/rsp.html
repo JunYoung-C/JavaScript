@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="kor">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -25,9 +25,41 @@
       const $scissors = document.querySelector("#scissors");
       const $rock = document.querySelector("#rock");
       const $paper = document.querySelector("#paper");
+      const $btn = document.querySelector(".btn");
       const IMG_URL = "./rsp.png";
       $computer.style.background = `url(${IMG_URL}) 0 0`;
       $computer.style.backgroundSize = "auto 200px";
+
+      const rspX = {
+        scissors: "0",
+        rock: "-220px",
+        paper: "-440px",
+      };
+
+      let hand = "scissors";
+      setInterval(() => {
+        if (hand === "scissors") {
+          hand = "rock";
+        } else if (hand === "rock") {
+          hand = "paper";
+        } else if (hand === "paper") {
+          hand = "scissors";
+        }
+        $computer.style.background = `url(${IMG_URL}) ${rspX[hand]} 0`;
+        $computer.style.backgroundSize = "auto 200px";
+      }, 100);
+
+      const onButtonClick = (event) => {
+        const myHand = event.target.textContent;
+        console.log(myHand);
+      };
+
+      $scissors.addEventListener("click", onButtonClick);
+      $rock.addEventListener("click", onButtonClick);
+      $paper.addEventListener("click", onButtonClick);
+      // 가위, 바위, 보를 일정 간격으로 화면에 출력
+      // 버튼을 클릭하면 화면이 잠시 멈추기
+      // 이기면 +1점 지면 -1점 무승부 0점, 합산 후 결과 출력
     </script>
   </body>
 </html>
