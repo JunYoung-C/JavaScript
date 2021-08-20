@@ -1,0 +1,93 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>숫자야구</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="input" />
+      <button>확인</button>
+    </form>
+    <div id="logs"></div>
+    <script>
+      const $form = document.querySelector("#form");
+      const $input = document.querySelector("#input");
+      const $button = document.querySelector("button");
+      const $logs = document.querySelector("#logs");
+      const numbers = Array(9)
+        .fill()
+        .map((n, i) => i + 1);
+      const randomNumbers = [];
+      for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * numbers.length);
+        const number = numbers.splice(randomIndex, 1);
+        randomNumbers.push(number[0]);
+      }
+      console.log(randomNumbers);
+
+      const errorCheck = (inputNumber) => {
+        if (inputNumber.length !== 4) {
+          alert("네자리 숫자를 입력하세요");
+          return false;
+        } else if (tries.includes(inputNumber)) {
+          alert("이미 시도한 값입니다.");
+          return false;
+        } else if (new Set(inputNumber).size !== 4) {
+          alert("중복된 값이 포함되었습니다.");
+        }
+        return true;
+      };
+
+      const tries = [];
+
+      const onClickButton = (event) => {
+        event.preventDefault();
+        const inputNumber = $input.value;
+        const correctNumber = randomNumbers.join("");
+        if (!errorCheck(inputNumber)) {
+          return;
+        }
+
+        if (inputNumber === correctNumber) {
+          $logs.textContent = "홈런!";
+          return;
+        }
+
+        if (tries.length >= 9) {
+          const message = document.createTextNode(
+            `패배! 정답은 ${correctNumber}`
+          );
+          $logs.appendChild(message);
+          return;
+        }
+
+        let strike = 0;
+        let ball = 0;
+        for (let i = 0; i < correctNumber.length; i++) {
+          if (correctNumber.indexOf(inputNumber[i]) >= 0) {
+            if (correctNumber[i] === inputNumber[i]) {
+              strike += 1;
+              continue;
+            }
+            ball += 1;
+          }
+        }
+        const message = document.createTextNode(
+          `${inputNumber} : ${strike}스트라이크 ${ball}볼`
+        );
+        $logs.append(message, document.createElement("br"));
+
+        tries.push(inputNumber);
+        console.log(inputNumber);
+      };
+      $form.addEventListener("submit", onClickButton);
+      // 랜덤으로 숫자 네자리 선별
+      // 네자리 입력
+      // 홈런이면 축하메시지와 함께 게임 승리 종료
+      // 10회 시도를 초과하면 답을 알려주고 게임 패배 종료
+      // 둘다 아니면 ?스트라이크 ?볼 출력 -> 시도할때마다 늘어나게
+    </script>
+  </body>
+</html>
