@@ -124,7 +124,7 @@
           const emptyCells = rows.flat().filter((v) => !v.textContent);
           const randomCell =
             emptyCells[Math.floor(Math.random() * emptyCells.length)];
-          clickabla = false;
+          clickable = false;
           setTimeout(() => {
             randomCell.textContent = "X";
             checkWinnerAndDraw(randomCell);

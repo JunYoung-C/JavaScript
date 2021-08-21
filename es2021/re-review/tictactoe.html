@@ -1,0 +1,102 @@
+<html lang="kor">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>틱택토</title>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+
+      td {
+        border: 1px solid black;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const { body } = document;
+      const $table = document.createElement("table");
+      body.appendChild($table);
+      const $result = document.createElement("div");
+      body.appendChild($result);
+
+      const rows = [];
+      // 9칸짜리 표를 생성한다.
+      // 칸을 클릭하면 "O" / "X"가 순서대로 표시되게 한다.
+      // 빙고가 되면 승리한다.
+      // 칸을 모두 채웠는데 빙고가 없으면 무승부이다.
+      for (let i = 0; i < 3; i++) {
+        const $tr = document.createElement("tr");
+        const cells = [];
+        $table.appendChild($tr);
+        for (let j = 0; j < 3; j++) {
+          const $td = document.createElement("td");
+          $tr.appendChild($td);
+          cells.push($td);
+        }
+        rows.push(cells);
+      }
+
+      const checkWinner = (target) => {
+        const rowIndex = target.parentNode.rowIndex;
+        const cellIndex = target.cellIndex;
+
+        if (
+          rows[rowIndex][0].textContent === turn &&
+          rows[rowIndex][1].textContent === turn &&
+          rows[rowIndex][2].textContent === turn
+        ) {
+          return true;
+        } else if (
+          rows[0][cellIndex].textContent === turn &&
+          rows[1][cellIndex].textContent === turn &&
+          rows[2][cellIndex].textContent === turn
+        ) {
+          return true;
+        } else if (
+          rows[0][0].textContent === turn &&
+          rows[1][1].textContent === turn &&
+          rows[2][2].textContent === turn
+        ) {
+          return true;
+        } else if (
+          rows[0][2].textContent === turn &&
+          rows[1][1].textContent === turn &&
+          rows[2][0].textContent === turn
+        ) {
+          return true;
+        }
+
+        return false;
+      };
+
+      let turn = "O";
+      const onClick = (event) => {
+        if (event.target.textContent) {
+          return;
+        }
+        event.target.textContent = turn;
+
+        if (checkWinner(event.target)) {
+          $result.textContent = `${turn}님의 승리!`;
+          $table.removeEventListener("click", onClick);
+          return;
+        }
+        // 승리시 게임종료
+
+        if (rows.flat().every((cell) => cell.textContent)) {
+          $result.textContent = `무승부!`;
+          return;
+        }
+        //무승부시 게임 종료
+        turn = turn === "O" ? "X" : "O";
+      };
+      $table.addEventListener("click", onClick);
+    </script>
+  </body>
+</html>
