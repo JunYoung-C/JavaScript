@@ -34,5 +34,60 @@
     </table>
     <div id="result"></div>
   </body>
-  <script></script>
+  <script>
+    const $form = document.querySelector("#form");
+    const data = [];
+    const CODE = {
+      NORMAL: -1,
+      QUESTION: -2,
+      FLAG: -3,
+      QUESTION_MINE: -4,
+      FLAG_MINE: -5,
+      MINE: -6,
+      OPENED: 0,
+    };
+
+    function plantMine(row, cell, mine) {
+      const numbers = Array(row * cell)
+        .fill()
+        .map((e, i) => i);
+      const createdMines = [];
+
+      for (let i = 0; createdMines.length < mine; i++) {
+        const mineIndex = Math.floor(Math.random() * numbers.length);
+        const createdMine = numbers.splice(mineIndex, 1)[0];
+        createdMines.push(createdMine);
+      }
+
+      for (let i = 0; i < row; i++) {
+        const cells = [];
+        for (let j = 0; j < cell; j++) {
+          cells.push(CODE.NORMAL);
+        }
+      }
+
+      for (let i = 0; i < mine; i++) {
+        const rowIndex = Math.floor(createdMines[i] / 10);
+        const columnIndex = createdMines[i] % 10;
+        data[rowIndex][columnIndex] = CODE.MINE;
+      }
+      console.log(data);
+    }
+
+    function onSubmit(event) {
+      event.preventDefault();
+      const row = event.target.row.value;
+      const cell = event.target.cell.value;
+      const mine = event.target.mine.value;
+      plantMine(row, cell, mine);
+    }
+
+    $form.addEventListener("submit", onSubmit);
+    // n X m줄, 지뢰 k개의 지뢰찾기 판 생성
+    // 마우스 좌클릭시 닫혀있는 칸이 열림.
+    // 지뢰일시 게임종료
+    // 지뢰가 아닐시 열림. 주변에 지뢰가 없는 칸이라면 계속 영역이 확장됨.
+    // 마우스우클릭시 물음표, 깃발, 다시 원래의 칸으로 변경할 수 있음
+    // 지뢰를 제외한 칸을 모두 열면 게임 승리. 시간 출력
+  </script>
 </html>
