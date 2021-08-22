@@ -36,7 +36,7 @@
   </body>
   <script>
     const $form = document.querySelector("#form");
-    const data = [];
+    let data = [];
     const CODE = {
       NORMAL: -1,
       QUESTION: -2,
@@ -59,11 +59,13 @@
         createdMines.push(createdMine);
       }
 
+      const data = [];
       for (let i = 0; i < row; i++) {
         const cells = [];
         for (let j = 0; j < cell; j++) {
           cells.push(CODE.NORMAL);
         }
+        data.push(cells);
       }
 
       for (let i = 0; i < mine; i++) {
@@ -71,7 +73,7 @@
         const columnIndex = createdMines[i] % 10;
         data[rowIndex][columnIndex] = CODE.MINE;
       }
-      console.log(data);
+      return data;
     }
 
     function onSubmit(event) {
@@ -79,7 +81,7 @@
       const row = event.target.row.value;
       const cell = event.target.cell.value;
       const mine = event.target.mine.value;
-      plantMine(row, cell, mine);
+      data = plantMine(row, cell, mine);
     }
 
     $form.addEventListener("submit", onSubmit);
