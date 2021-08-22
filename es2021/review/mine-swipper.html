@@ -36,7 +36,12 @@
   </body>
   <script>
     const $form = document.querySelector("#form");
+    const $tbody = document.querySelector("#table tbody");
     let data = [];
+    let opencount;
+    let mine;
+    let row;
+    let cell;
     const CODE = {
       NORMAL: -1,
       QUESTION: -2,
@@ -76,12 +81,122 @@
       return data;
     }
 
+    function countMine(rI, cI) {
+      const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
+      let i = 0;
+      mines.includes(data[rI - 1]?.[cI - 1]) && i++;
+      mines.includes(data[rI - 1]?.[cI]) && i++;
+      mines.includes(data[rI - 1]?.[cI + 1]) && i++;
+      mines.includes(data[rI]?.[cI - 1]) && i++;
+      mines.includes(data[rI]?.[cI + 1]) && i++;
+      mines.includes(data[rI + 1]?.[cI - 1]) && i++;
+      mines.includes(data[rI + 1]?.[cI]) && i++;
+      mines.includes(data[rI + 1]?.[cI + 1]) && i++;
+      return i;
+    }
+
+    function openAround(rI, cI) {
+      const target = $tbody.children[rI]?.children[cI];
+      if (!target || target.classList.contains("opened")) {
+        return;
+      }
+      const count = countMine(rI, cI);
+      target.className = "opened";
+      target.textContent = count || "";
+      opencount++;
+      if (opencount === row * cell - mine) {
+        setTimeout(() => {
+          alert("축하합니다");
+        }, 50);
+      }
+      console.log(opencount, row * cell - mine);
+      setTimeout(() => {
+        if (count === 0) {
+          openAround(rI - 1, cI - 1);
+          openAround(rI - 1, cI);
+          openAround(rI - 1, cI + 1);
+          openAround(rI, cI - 1);
+          openAround(rI, cI + 1);
+          openAround(rI + 1, cI - 1);
+          openAround(rI + 1, cI);
+          openAround(rI + 1, cI + 1);
+        }
+      }, 0);
+    }
+    function onLeftClick(event) {
+      event.preventDefault();
+      const rI = event.target.parentNode.rowIndex;
+      const cI = event.target.cellIndex;
+      const cellData = data[rI][cI];
+
+      if (cellData === CODE.NORMAL) {
+        openAround(rI, cI);
+      } else if (cellData === CODE.MINE) {
+      }
+      // 지뢰가 없으면 열림
+      // 주변에 지뢰가 없으면 주변을 열기
+      // 주변에 지뢰가 있으면 그 칸만 열기
+      // 지뢰가 있으면 열고 게임 종료
+    }
+
+    function onRightClick(event) {
+      event.preventDefault();
+      const rI = event.target.parentNode.rowIndex;
+      const cI = event.target.cellIndex;
+      const cellData = data[rI][cI];
+      if (cellData === CODE.NORMAL) {
+        data[rI][cI] = CODE.QUESTION;
+        event.target.className = "question";
+        event.target.textContent = "?";
+      } else if (cellData === CODE.QUESTION) {
+        data[rI][cI] = CODE.FLAG;
+        event.target.className = "flag";
+        event.target.textContent = "!";
+      } else if (cellData === CODE.FLAG) {
+        data[rI][cI] = CODE.NORMAL;
+        event.target.className = "";
+        event.target.textContent = "";
+      } else if (cellData === CODE.MINE) {
+        data[rI][cI] = CODE.QUESTION_MINE;
+        event.target.className = "question";
+        event.target.textContent = "?";
+      } else if (cellData === CODE.QUESTION_MINE) {
+        data[rI][cI] = CODE.FLAG_MINE;
+        event.target.className = "flag";
+        event.target.textContent = "!";
+      } else if (cellData === CODE.FLAG_MINE) {
+        data[rI][cI] = CODE.MINE;
+        event.target.className = "";
+        event.target.textContent = "X";
+      }
+    }
+
+    function drawTable() {
+      data.forEach((row) => {
+        const $tr = document.createElement("tr");
+        $tbody.appendChild($tr);
+        row.forEach((cell) => {
+          const $td = document.createElement("td");
+          $tr.appendChild($td);
+          if (cell === CODE.MINE) {
+            $td.textContent = "X";
+          }
+        });
+      });
+      $tbody.addEventListener("click", onLeftClick);
+      $tbody.addEventListener("contextmenu", onRightClick);
+    }
+
     function onSubmit(event) {
       event.preventDefault();
-      const row = event.target.row.value;
-      const cell = event.target.cell.value;
-      const mine = event.target.mine.value;
-      data = plantMine(row, cell, mine);
+      row = event.target.row.value;
+      cell = event.target.cell.value;
+      mine = event.target.mine.value;
+      opencount = 0;
+      // data = plantMine(row, cell, mine);
+      data = plantMine(10, 10, 10);
+      // 편의상 수정
+      drawTable();
     }
 
     $form.addEventListener("submit", onSubmit);
