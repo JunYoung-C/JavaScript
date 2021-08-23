@@ -55,9 +55,15 @@
     let openCount;
     let startTime;
     let interval;
+    let normalCellFound = false;
+    let searched;
+    let firstClick = true;
 
     function onSubmit(event) {
       event.preventDefault();
+      normalCellFound = false;
+      searched = false;
+      firstClick = true;
       row = parseInt(event.target.row.value);
       cell = parseInt(event.target.cell.value);
       mine = parseInt(event.target.mine.value);
@@ -189,14 +195,58 @@
         }
       }, 0);
     }
+
+    function transferMine(rI, cI) {
+      if (normalCellFound) return;
+      if (rI < 0 || rI >= row || cI < 0 || cI >= cell) return;
+      if (searched[rI][cI]) return;
+      if (data[rI][cI] === CODE.NORMAL) {
+        normalCellFound = true;
+        data[rI][cI] = CODE.MINE;
+        $tbody.children[rI].children[cI].textContent = "X";
+      } else {
+        searched[rI][cI] = true;
+        transferMine(rI - 1, cI - 1);
+        transferMine(rI - 1, cI);
+        transferMine(rI - 1, cI + 1);
+        transferMine(rI, cI - 1);
+        transferMine(rI, cI + 1);
+        transferMine(rI + 1, cI - 1);
+        transferMine(rI + 1, cI);
+        transferMine(rI + 1, cI + 1);
+      }
+    }
+
+    function showMine() {
+      const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
+      data.forEach((row, rowIndex) => {
+        row.forEach((cell, cellIndex) => {
+          if (mines.includes(cell)) {
+            $tbody.children[rowIndex].children[cellIndex].textContent = "X";
+          }
+        });
+      });
+    }
     function onLeftClick(event) {
       const target = event.target;
       const rowIndex = target.parentNode.rowIndex;
       const cellIndex = target.cellIndex;
-      const cellData = data[rowIndex][cellIndex];
+      let cellData = data[rowIndex][cellIndex];
+      if (firstClick) {
+        firstClick = false;
+        searched = Array(row)
+          .fill()
+          .map(() => []);
+        if (cellData === CODE.MINE) {
+          transferMine(rowIndex, cellIndex);
+          data[rowIndex][cellIndex] = CODE.NORMAL;
+          cellData = CODE.NORMAL;
+        }
+      }
       if (cellData === CODE.NORMAL) {
         openAround(rowIndex, cellIndex);
       } else if (cellData === CODE.MINE) {
+        showMine();
         target.textContent = "펑";
         target.className = "opened";
         $tbody.removeEventListener("contextmenu", onRightClick);
