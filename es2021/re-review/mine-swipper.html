@@ -60,21 +60,77 @@
       // 클릭한 곳에 지뢰가 있으면 터짐. 게임 종료
       // 지뢰를 제외하고 모두 열었으면 게임 종료
 
-      function createMineTable() {
-        // 판 생성
-        for (let i = 0; i < row; i++) {
-          const $tr = document.createElement("tr");
-          const row = [];
-          for (let j = 0; j < cell; j++) {
-            const $td = document.createElement("td");
-            $tr.appendChild($td);
-            row.push(CODE.NORMAL);
-          }
-          data.push(row);
-          $tbody.appendChild($tr);
+      function countMine(rI, cI) {
+        let count = 0;
+        data[rI - 1]?.[cI - 1] === CODE.MINE && count++;
+        data[rI - 1]?.[cI] === CODE.MINE && count++;
+        data[rI - 1]?.[cI + 1] === CODE.MINE && count++;
+        data[rI][cI - 1] === CODE.MINE && count++;
+        data[rI][cI + 1] === CODE.MINE && count++;
+        data[rI + 1]?.[cI - 1] === CODE.MINE && count++;
+        data[rI + 1]?.[cI] === CODE.MINE && count++;
+        data[rI + 1]?.[cI + 1] === CODE.MINE && count++;
+        return count;
+      }
+      function open(rI, cI) {
+        const target = $tbody.children[rI]?.children[cI];
+
+        if (!target) {
+          return;
+        }
+        if (target.classList.contains("opened")) {
+          return;
+        }
+        console.log(rI, cI);
+        if (data[rI][cI] >= CODE.NORMAL) {
+          const count = countMine(rI, cI);
+          target.classList.replace("closed", "opened");
+          data[rI][cI] = count;
+          target.textContent = count || "";
+        } else if (data[rI][cI] === CODE.MINE) {
         }
 
-        // 지뢰 깔기
+        if (data[rI][cI] !== 0) {
+          return;
+        }
+        open(rI - 1, cI - 1);
+        open(rI - 1, cI);
+        open(rI - 1, cI + 1);
+        open(rI, cI - 1);
+        open(rI, cI + 1);
+        open(rI + 1, cI - 1);
+        open(rI + 1, cI);
+        open(rI + 1, cI + 1);
+      }
+      function onLeftClick(event) {
+        const target = event.target;
+        const rI = target.parentNode.rowIndex;
+        const cI = target.cellIndex;
+        open(rI, cI);
+      }
+
+      function onRightClick(event) {
+        event.preventDefault();
+        const target = event.target;
+        const rI = target.parentNode.rowIndex;
+        const cI = target.cellIndex;
+        const cellData = data[rI][cI];
+        if (target.classList.contains("closed")) {
+          target.classList.replace("closed", "question");
+          target.textContent = "?";
+        } else if (target.classList.contains("question")) {
+          target.classList.replace("question", "flag");
+          target.textContent = "!";
+        } else if (target.classList.contains("flag")) {
+          target.classList.replace("flag", "closed");
+          target.textContent = "";
+          if (cellData == CODE.MINE) {
+            target.textContent = "X";
+          }
+        }
+      }
+
+      function plantMine() {
         const mines = [];
         const numbers = Array(row * cell)
           .fill()
@@ -89,8 +145,30 @@
           const rI = Math.floor(mines[i] / 10);
           const cI = mines[i] % 10;
           data[rI][cI] = CODE.MINE;
+          $tbody.children[rI].children[cI].textContent = "X";
         }
-        console.log(data, numbers, mines);
+      }
+
+      function createMineTable() {
+        // 판 생성
+        for (let i = 0; i < row; i++) {
+          const $tr = document.createElement("tr");
+          const row = [];
+          for (let j = 0; j < cell; j++) {
+            const $td = document.createElement("td");
+            $td.className = "closed";
+            $tr.appendChild($td);
+            row.push(CODE.NORMAL);
+          }
+          data.push(row);
+          $tbody.appendChild($tr);
+        }
+
+        // 지뢰 깔기
+        plantMine();
+
+        $tbody.addEventListener("click", onLeftClick);
+        $tbody.addEventListener("contextmenu", onRightClick);
       }
 
       function onSubmit(event) {
