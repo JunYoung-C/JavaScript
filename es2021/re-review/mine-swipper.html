@@ -39,5 +39,69 @@
       <tbody></tbody>
     </table>
     <div id="result"></div>
+    <script>
+      const $tbody = document.querySelector("#table tbody");
+      const $form = document.querySelector("form");
+      const $timer = document.querySelector("timer");
+      const $table = document.querySelector("table");
+      const $result = document.querySelector("result");
+      let row;
+      let cell;
+      let mine;
+      let data = [];
+      const CODE = {
+        NORMAL: 0,
+        MINE: -1,
+      };
+      // 가로, 세로, 지뢰개수를 입력하면 그에 맞는 지뢰 판 생성
+      // 좌클릭하면 칸 오픈, 우클릭하면 물음표, 깃발, 원상복구 순으로 바뀜
+      // 클릭한 곳에 지뢰가 없으면 열림.
+      // 주변에도 지뢰가 없으면 자동으로 계속 열림
+      // 클릭한 곳에 지뢰가 있으면 터짐. 게임 종료
+      // 지뢰를 제외하고 모두 열었으면 게임 종료
+
+      function createMineTable() {
+        // 판 생성
+        for (let i = 0; i < row; i++) {
+          const $tr = document.createElement("tr");
+          const row = [];
+          for (let j = 0; j < cell; j++) {
+            const $td = document.createElement("td");
+            $tr.appendChild($td);
+            row.push(CODE.NORMAL);
+          }
+          data.push(row);
+          $tbody.appendChild($tr);
+        }
+
+        // 지뢰 깔기
+        const mines = [];
+        const numbers = Array(row * cell)
+          .fill()
+          .map((n, i) => i);
+        for (let i = 0; i < mine; i++) {
+          const index = Math.floor(Math.random() * numbers.length);
+          const value = numbers.splice(index, 1);
+          mines.push(value[0]);
+        }
+
+        for (let i = 0; i < mine; i++) {
+          const rI = Math.floor(mines[i] / 10);
+          const cI = mines[i] % 10;
+          data[rI][cI] = CODE.MINE;
+        }
+        console.log(data, numbers, mines);
+      }
+
+      function onSubmit(event) {
+        event.preventDefault();
+        row = parseInt(event.target.row.value);
+        cell = parseInt(event.target.cell.value);
+        mine = parseInt(event.target.mine.value);
+        createMineTable();
+      }
+
+      $form.addEventListener("submit", onSubmit);
+    </script>
   </body>
 </html>
