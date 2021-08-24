@@ -41,10 +41,10 @@
     <div id="result"></div>
     <script>
       const $tbody = document.querySelector("#table tbody");
-      const $form = document.querySelector("form");
-      const $timer = document.querySelector("timer");
-      const $table = document.querySelector("table");
-      const $result = document.querySelector("result");
+      const $form = document.querySelector("#form");
+      const $timer = document.querySelector("#timer");
+      const $table = document.querySelector("#table");
+      const $result = document.querySelector("#result");
       let row;
       let cell;
       let mine;
@@ -53,6 +53,8 @@
         NORMAL: 0,
         MINE: -1,
       };
+      let startTime;
+      let timeInterval;
       // 가로, 세로, 지뢰개수를 입력하면 그에 맞는 지뢰 판 생성
       // 좌클릭하면 칸 오픈, 우클릭하면 물음표, 깃발, 원상복구 순으로 바뀜
       // 클릭한 곳에 지뢰가 없으면 열림.
@@ -72,6 +74,8 @@
         data[rI + 1]?.[cI + 1] === CODE.MINE && count++;
         return count;
       }
+
+      let openCount = 0;
       function open(rI, cI) {
         const target = $tbody.children[rI]?.children[cI];
 
@@ -81,13 +85,18 @@
         if (target.classList.contains("opened")) {
           return;
         }
-        console.log(rI, cI);
+
         if (data[rI][cI] >= CODE.NORMAL) {
           const count = countMine(rI, cI);
           target.classList.replace("closed", "opened");
+          openCount++;
           data[rI][cI] = count;
           target.textContent = count || "";
         } else if (data[rI][cI] === CODE.MINE) {
+          target.classList.replace("closed", "opened");
+          target.textContent = "펑";
+          $tbody.removeEventListener("click", onLeftClick);
+          $tbody.removeEventListener("contextmenu", onRightClick);
         }
 
         if (data[rI][cI] !== 0) {
@@ -102,11 +111,22 @@
         open(rI + 1, cI);
         open(rI + 1, cI + 1);
       }
+
       function onLeftClick(event) {
         const target = event.target;
         const rI = target.parentNode.rowIndex;
         const cI = target.cellIndex;
         open(rI, cI);
+        if (openCount === row * cell - mine) {
+          $tbody.removeEventListener("click", onLeftClick);
+          $tbody.removeEventListener("contextmenu", onRightClick);
+          clearInterval(timeInterval);
+          setTimeout(() => {
+            alert(
+              `축하합니다! ${(new Date() - startTime) / 1000}초 걸렸습니다.`
+            );
+          }, 50);
+        }
       }
 
       function onRightClick(event) {
@@ -177,6 +197,12 @@
         cell = parseInt(event.target.cell.value);
         mine = parseInt(event.target.mine.value);
         createMineTable();
+        startTime = new Date();
+        timeInterval = setInterval(() => {
+          $timer.textContent = `${Math.floor(
+            (new Date() - startTime) / 1000
+          )}초`;
+        }, 1000);
       }
 
       $form.addEventListener("submit", onSubmit);
