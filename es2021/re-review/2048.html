@@ -138,9 +138,9 @@
             data.forEach((row, i) => {
               row.forEach((cell, j) => {
                 if (cell !== 0) {
-                  const prevData = data[i][movedData[i].length - 1];
+                  const prevData = movedData[i][movedData[i].length - 1];
                   if (prevData === cell) {
-                    movedData[i][movedData[i].length - 1] *= 2;
+                    movedData[i][movedData[i].length - 1] *= -2;
                   } else {
                     movedData[i].push(cell);
                   }
@@ -150,7 +150,70 @@
 
             data.forEach((row, i) => {
               const prevData = row.forEach((cell, j) => {
-                data[i][j] = movedData[i][j] || 0;
+                data[i][j] = Math.abs(movedData[i][j]) || 0;
+              });
+            });
+            break;
+          }
+          case "right": {
+            data.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                if (data[i][3 - j] !== 0) {
+                  const prevData = movedData[i][movedData[i].length - 1];
+                  if (prevData === data[i][3 - j]) {
+                    movedData[i][movedData[i].length - 1] *= -2;
+                  } else {
+                    movedData[i].push(data[i][3 - j]);
+                  }
+                }
+              });
+            });
+
+            data.forEach((row, i) => {
+              const prevData = row.forEach((cell, j) => {
+                data[i][3 - j] = Math.abs(movedData[i][j]) || 0;
+              });
+            });
+            break;
+          }
+          case "up": {
+            data.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                if (cell !== 0) {
+                  const prevData = movedData[j][movedData[j].length - 1];
+                  if (prevData === cell) {
+                    movedData[j][movedData[j].length - 1] *= -2;
+                  } else {
+                    movedData[j].push(cell);
+                  }
+                }
+              });
+            });
+
+            data.forEach((row, i) => {
+              const prevData = row.forEach((cell, j) => {
+                data[j][i] = Math.abs(movedData[i][j]) || 0;
+              });
+            });
+            break;
+          }
+          case "down": {
+            data.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                if (data[3 - i][j] !== 0) {
+                  const prevData = movedData[j][movedData[j].length - 1];
+                  if (prevData === data[3 - i][j]) {
+                    movedData[j][movedData[j].length - 1] *= -2;
+                  } else {
+                    movedData[j].push(data[3 - i][j]);
+                  }
+                }
+              });
+            });
+
+            data.forEach((row, i) => {
+              const prevData = row.forEach((cell, j) => {
+                data[3 - i][j] = Math.abs(movedData[j][i]) || 0;
               });
             });
             break;
@@ -158,7 +221,7 @@
         }
         create2Block();
         draw();
-        console.log(movedData);
+        console.log(movedData, data);
       }
 
       function startGame() {
