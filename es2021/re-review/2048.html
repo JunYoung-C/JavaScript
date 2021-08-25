@@ -121,8 +121,8 @@
           row.forEach((cell, cI) => {
             const target = $table.children[rI].children[cI];
             if (data[rI][cI] > 0) {
-              target.className = "color-" + 2;
-              target.textContent = "2";
+              target.className = "color-" + data[rI][cI];
+              target.textContent = data[rI][cI];
             } else {
               target.className = "";
               target.textContent = "";
@@ -134,24 +134,31 @@
       function moveCell(direction) {
         const movedData = [[], [], [], []];
         switch (direction) {
-          case "left":
+          case "left": {
             data.forEach((row, i) => {
               row.forEach((cell, j) => {
-                if (data[i][j] !== 0) {
-                  movedData[i].push(cell);
+                if (cell !== 0) {
+                  const prevData = data[i][movedData[i].length - 1];
+                  if (prevData === cell) {
+                    movedData[i][movedData[i].length - 1] *= 2;
+                  } else {
+                    movedData[i].push(cell);
+                  }
                 }
               });
             });
 
             data.forEach((row, i) => {
-              row.forEach((cell, j) => {
+              const prevData = row.forEach((cell, j) => {
                 data[i][j] = movedData[i][j] || 0;
               });
             });
             break;
+          }
         }
         create2Block();
         draw();
+        console.log(movedData);
       }
 
       function startGame() {
