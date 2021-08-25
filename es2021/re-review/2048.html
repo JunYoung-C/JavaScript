@@ -114,18 +114,56 @@
         const emptyRow = empty[randomIndex][0];
         const emptyCell = empty[randomIndex][1];
         data[emptyRow][emptyCell] = 2;
-        const target = $table.children[emptyRow].children[emptyCell];
-        target.className = "color-" + 2;
-        target.textContent = "2";
+      }
+
+      function draw() {
+        data.forEach((row, rI) => {
+          row.forEach((cell, cI) => {
+            const target = $table.children[rI].children[cI];
+            if (data[rI][cI] > 0) {
+              target.className = "color-" + 2;
+              target.textContent = "2";
+            } else {
+              target.className = "";
+              target.textContent = "";
+            }
+          });
+        });
       }
 
       function moveCell(direction) {
-        console.log(direction);
+        const movedData = [[], [], [], []];
+        switch (direction) {
+          case "left":
+            data.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                if (data[i][j] !== 0) {
+                  movedData[i].push(cell);
+                }
+              });
+            });
+
+            data.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                data[i][j] = movedData[i][j] || 0;
+              });
+            });
+            break;
+        }
+        create2Block();
+        draw();
       }
 
       function startGame() {
         createTable();
+        /*let data = [
+          [0, 0, 2, 0],
+          [2, 2, 4, 8],
+          [2, 2, 2, 2],
+          [0, 2, 0, 2],
+        ]; */
         create2Block();
+        draw();
         window.addEventListener("keydown", (event) => {
           if (event.key === "ArrowLeft") {
             moveCell("left");
