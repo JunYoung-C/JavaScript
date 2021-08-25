@@ -97,6 +97,9 @@
           target.textContent = "펑";
           $tbody.removeEventListener("click", onLeftClick);
           $tbody.removeEventListener("contextmenu", onRightClick);
+          setTimeout(() => {
+            alert(`패배하셨습니다..`);
+          }, 50);
         }
 
         if (data[rI][cI] !== 0) {
