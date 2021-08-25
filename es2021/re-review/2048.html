@@ -68,7 +68,55 @@
     <table id="table"></table>
     <div id="score">0</div>
     <script>
-      // 판생성
+      const $table = document.querySelector("#table");
+      const $score = document.querySelector("#score");
+      let data = [];
+      // 4X4 판생성
+      // 랜덤으로 '2'블록 생성
+      // 마우스로 조작하거나 키보드로 조작하면 해당방향으로 모든 블록이 이동
+      // 이동하고 같은 두개의 블록끼리 합치기 (한번만 적용)
+      // 다시 랜덤으로'2'블록 생성
+
+      function createTable() {
+        const $fragment = document.createDocumentFragment();
+        [1, 2, 3, 4].forEach(function () {
+          const $tr = document.createElement("tr");
+          const rowData = [];
+          [1, 2, 3, 4].forEach(function () {
+            const $td = document.createElement("td");
+            $tr.appendChild($td);
+            rowData.push(0);
+          });
+          $fragment.appendChild($tr);
+          data.push(rowData);
+        });
+        $table.appendChild($fragment);
+      }
+
+      function create2Block() {
+        // 빈칸 도출
+        const empty = [];
+        data.forEach((row, rI) => {
+          row.forEach((cell, cI) => {
+            if (data[rI][cI] === 0) {
+              empty.push([rI, cI]);
+            }
+          });
+        });
+
+        // 랜덤으로 2 넣기
+        const randomIndex = Math.floor(Math.random() * empty.length);
+        const emptyRow = empty[randomIndex][0];
+        const emptyCell = empty[randomIndex][1];
+        data[emptyRow][emptyCell] = 2;
+        const target = $table.children[emptyRow].children[emptyCell];
+        target.className = "color-" + 2;
+        target.textContent = "2";
+
+        console.log(emptyRow, emptyCell);
+      }
+      createTable();
+      create2Block();
     </script>
   </body>
 </html>
