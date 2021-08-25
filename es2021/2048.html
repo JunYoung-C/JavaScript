@@ -274,6 +274,7 @@
         const endCoord = [event.clientX, event.clientY];
         const diffX = endCoord[0] - startCoord[0];
         const diffY = endCoord[1] - startCoord[1];
+        console.log(diffX, diffY);
         if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
           moveCells("left");
         } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {

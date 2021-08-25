@@ -71,6 +71,7 @@
       const $table = document.querySelector("#table");
       const $score = document.querySelector("#score");
       let data = [];
+
       // 4X4 판생성
       // 랜덤으로 '2'블록 생성
       // 마우스로 조작하거나 키보드로 조작하면 해당방향으로 모든 블록이 이동
@@ -104,6 +105,10 @@
           });
         });
 
+        if (empty.length === 0) {
+          alert("패배하셨습니다.");
+          return;
+        }
         // 랜덤으로 2 넣기
         const randomIndex = Math.floor(Math.random() * empty.length);
         const emptyRow = empty[randomIndex][0];
@@ -112,11 +117,57 @@
         const target = $table.children[emptyRow].children[emptyCell];
         target.className = "color-" + 2;
         target.textContent = "2";
-
-        console.log(emptyRow, emptyCell);
       }
-      createTable();
-      create2Block();
+
+      function moveCell(direction) {
+        console.log(direction);
+      }
+
+      function startGame() {
+        createTable();
+        create2Block();
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            moveCell("left");
+          } else if (event.key === "ArrowRight") {
+            moveCell("right");
+          } else if (event.key === "ArrowUp") {
+            moveCell("up");
+          } else if (event.key === "ArrowDown") {
+            moveCell("down");
+          }
+        });
+
+        let startCoord;
+        window.addEventListener("mousedown", (event) => {
+          startCoord = [event.clientX, event.clientY];
+        });
+        window.addEventListener("mouseup", (event) => {
+          const endCoord = [event.clientX, event.clientY];
+          const directionX = endCoord[0] - startCoord[0]; // 오른쪽이 +
+          const directionY = endCoord[1] - startCoord[1]; // 아래쪽이 +
+          if (directionX > 0 && Math.abs(directionX) > Math.abs(directionY)) {
+            moveCell("right");
+          } else if (
+            directionX < 0 &&
+            Math.abs(directionX) > Math.abs(directionY)
+          ) {
+            moveCell("left");
+          } else if (
+            directionY < 0 &&
+            Math.abs(directionX) <= Math.abs(directionY)
+          ) {
+            moveCell("up");
+          } else if (
+            directionY > 0 &&
+            Math.abs(directionX) <= Math.abs(directionY)
+          ) {
+            moveCell("down");
+          }
+        });
+      }
+
+      startGame();
     </script>
   </body>
 </html>
